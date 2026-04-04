@@ -1,0 +1,738 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Fredoka+One&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#e8d5b0;min-height:100vh;overflow-x:hidden}
+.screen{display:none}
+.screen.active{display:block}
+#s-title.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;text-align:center;background:#f5e6c8}
+#s-court.active{display:flex;flex-direction:column;min-height:100vh;background:#f0e0c0}
+#s-verdict.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#f5e6c8;padding:2rem}
+
+.title-goose{width:140px;height:140px;margin:0 auto 1rem}
+.game-title{font-family:'Fredoka One',cursive;font-size:clamp(2.5rem,8vw,4.5rem);color:#3d2b1f;letter-spacing:-.02em;line-height:1;text-shadow:3px 3px 0 #c8a87a}
+.subtitle{font-size:1rem;color:#7a5c3a;font-weight:800;margin:.8rem 0 1.8rem;letter-spacing:.03em}
+.btn-main{font-family:'Fredoka One',cursive;font-size:1.4rem;padding:.9rem 2.8rem;background:#e07b3a;border:3px solid #3d2b1f;border-radius:60px;color:#fff;cursor:pointer;box-shadow:0 5px 0 #3d2b1f;transition:all .1s;letter-spacing:.03em}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 7px 0 #3d2b1f}
+.btn-main:active{transform:translateY(4px);box-shadow:0 1px 0 #3d2b1f}
+.btn-soft{font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;padding:.5rem 1.3rem;background:#c8e8b8;border:2.5px solid #3d2b1f;border-radius:40px;color:#3d2b1f;cursor:pointer;box-shadow:0 3px 0 #3d2b1f;transition:all .1s;margin-top:.8rem}
+.btn-soft:hover{transform:translateY(-1px)}
+.btn-soft:active{transform:translateY(2px);box-shadow:0 1px 0 #3d2b1f}
+.feat-row{display:flex;gap:.8rem;margin-top:1.5rem;flex-wrap:wrap;justify-content:center}
+.feat-card{background:#fff8ee;border:2.5px solid #3d2b1f;border-radius:16px;padding:.8rem;width:130px;font-size:.8rem;color:#5c3d22;font-weight:800;text-align:center;box-shadow:3px 3px 0 #3d2b1f}
+.feat-card .fi{font-size:1.8rem;display:block;margin-bottom:.4rem}
+
+/* COURT TOP BAR */
+.court-topbar{background:#6b3a1f;border-bottom:3px solid #3d2b1f;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between}
+.court-sign{font-family:'Fredoka One',cursive;color:#f5c842;font-size:1.1rem;letter-spacing:.08em}
+.round-pill{background:#f5c842;border:2.5px solid #3d2b1f;border-radius:20px;font-family:'Fredoka One',cursive;font-size:.8rem;color:#3d2b1f;padding:.2rem .8rem}
+
+/* JUDGE BENCH */
+.judge-bench-wrap{background:#8b5e3c;border-bottom:3px solid #3d2b1f;padding:.8rem 1rem;display:flex;align-items:flex-end;gap:1rem}
+.judge-bench-desk{background:#c8a87a;border:3px solid #3d2b1f;border-radius:12px 12px 0 0;flex:1;padding:.6rem 1rem;display:flex;align-items:center;gap:.8rem;min-height:90px}
+.judge-speech{flex:1;background:#fff8ee;border:2.5px solid #3d2b1f;border-radius:12px;padding:.6rem .8rem;font-size:.82rem;font-weight:800;color:#3d2b1f;line-height:1.45;min-height:52px;position:relative}
+.judge-speech::before{content:'';position:absolute;left:-14px;top:14px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:14px solid #3d2b1f}
+.judge-speech::after{content:'';position:absolute;left:-10px;top:15px;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:11px solid #fff8ee}
+.judge-name-tag{font-family:'Fredoka One',cursive;font-size:.6rem;color:#8b5e3c;letter-spacing:.1em;margin-bottom:.3rem}
+
+/* PHASE BAR */
+.phase-bar{background:#5c3d22;padding:.35rem 1rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.phase-txt{font-family:'Fredoka One',cursive;font-size:.7rem;color:#f5c842;letter-spacing:.08em}
+.pdot{width:8px;height:8px;border-radius:50%;background:rgba(245,200,66,.25);border:1.5px solid rgba(245,200,66,.5);transition:all .3s}
+.pdot.on{background:#f5c842;border-color:#f5c842}
+.pdot.done{background:rgba(245,200,66,.5)}
+
+/* MAIN COURT */
+.court-body{display:flex;flex:1;gap:0;position:relative}
+.panel-l{width:150px;flex-shrink:0;background:#7a4e2d;border-right:3px solid #3d2b1f;padding:.8rem .6rem;display:flex;flex-direction:column;align-items:center;gap:.8rem}
+.panel-r{width:150px;flex-shrink:0;background:#7a4e2d;border-left:3px solid #3d2b1f;padding:.8rem .6rem;display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.center{flex:1;background:#9dc88c;padding:.8rem;display:flex;flex-direction:column;gap:.7rem;border-left:3px solid #3d2b1f;border-right:3px solid #3d2b1f}
+
+.panel-lbl{font-family:'Fredoka One',cursive;font-size:.65rem;color:#f5c842;letter-spacing:.08em;text-align:center}
+
+/* METER */
+.meter-wrap{width:110px}
+.meter-track{width:100%;height:110px;background:#2d1a0e;border:2.5px solid #f5c842;border-radius:10px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+.meter-fill{width:100%;transition:height .5s cubic-bezier(.34,1.56,.64,1);min-height:3px}
+.mfill-honk{background:#e05a3a}
+.mfill-gerald{background:#d04ec8}
+.meter-lbl-t{position:absolute;top:4px;left:0;right:0;text-align:center;font-family:'Fredoka One',cursive;font-size:.55rem;color:#ff8866}
+.meter-lbl-b{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-family:'Fredoka One',cursive;font-size:.55rem;color:#88ff88}
+
+/* CHARGE BOX */
+.charge-box{background:#fff8ee;border:3px solid #3d2b1f;border-radius:14px;padding:.8rem 1rem;box-shadow:3px 3px 0 #3d2b1f;min-height:75px}
+.charge-hdr{font-family:'Fredoka One',cursive;font-size:.65rem;color:#8b5e3c;letter-spacing:.12em;margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.charge-txt{font-size:.85rem;font-weight:800;color:#3d2b1f;line-height:1.45}
+.loading-row{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:800;color:#8b5e3c;font-style:italic}
+.dot{display:inline-block;animation:db 1s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.15s}
+.dot:nth-child(3){animation-delay:.3s}
+@keyframes db{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+
+/* GERALD BUBBLE */
+.gerald-bub{background:#fff8c8;border:3px solid #e07b3a;border-radius:14px;padding:.65rem .9rem;box-shadow:3px 3px 0 #c85e1a;min-height:55px;position:relative;display:none;animation:slid .3s ease}
+.gerald-bub.vis{display:block}
+@keyframes slid{from{transform:translateX(-15px);opacity:0}to{transform:translateX(0);opacity:1}}
+.gerald-bub::before{content:'';position:absolute;left:-13px;top:14px;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:13px solid #e07b3a}
+.gerald-bub::after{content:'';position:absolute;left:-8px;top:15px;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:10px solid #fff8c8}
+.obj-stamp{font-family:'Fredoka One',cursive;color:#cc2222;font-size:.7rem;border:2px solid #cc2222;border-radius:4px;padding:0 4px;display:inline-block;transform:rotate(-3deg);margin-right:4px}
+.gerald-nm{font-family:'Fredoka One',cursive;font-size:.6rem;color:#c85e1a;letter-spacing:.1em;margin-bottom:.25rem}
+.gerald-line{font-size:.8rem;font-weight:800;color:#5c3d22;line-height:1.45}
+
+/* WEBCAM */
+.cam-box{background:#1a1a2a;border:3px solid #3d2b1f;border-radius:14px;overflow:hidden;position:relative;flex:1;min-height:130px;max-height:165px;box-shadow:3px 3px 0 #3d2b1f}
+.cam-lbl{position:absolute;bottom:0;left:0;right:0;background:rgba(61,43,31,.8);font-family:'Fredoka One',cursive;font-size:.65rem;color:#fff8ee;text-align:center;padding:3px;letter-spacing:.06em}
+.cam-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#2a1f15;color:#6b5040;font-size:.8rem;font-weight:800;gap:.5rem;text-align:center}
+#vvid{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:none}
+.btn-tiny{font-family:'Fredoka One',cursive;font-size:.75rem;padding:.3rem .8rem;background:#e07b3a;border:2px solid #3d2b1f;border-radius:20px;color:#fff;cursor:pointer;box-shadow:0 2px 0 #3d2b1f}
+
+/* DEFENSE */
+.def-box{background:rgba(255,255,255,.12);border:2.5px solid rgba(255,255,255,.4);border-radius:14px;padding:.75rem}
+.def-hdr{font-family:'Fredoka One',cursive;font-size:.7rem;color:#fff8ee;letter-spacing:.08em;display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.timer-circle{width:36px;height:36px;border-radius:50%;background:#e07b3a;border:2.5px solid #3d2b1f;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:.9rem;color:#fff;flex-shrink:0}
+.transcript{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);border-radius:10px;padding:.5rem;min-height:45px;font-size:.78rem;color:rgba(255,248,238,.9);font-weight:800;line-height:1.5;font-style:italic}
+.wavez{display:flex;align-items:center;justify-content:center;gap:3px;height:22px;margin-top:.4rem;display:none}
+.wb{width:4px;background:#f5c842;border-radius:2px;animation:wa .6s ease-in-out infinite alternate;min-height:4px}
+@keyframes wa{from{height:4px}to{height:18px}}
+.wb:nth-child(2){animation-delay:.1s}.wb:nth-child(3){animation-delay:.2s}.wb:nth-child(4){animation-delay:.3s}.wb:nth-child(5){animation-delay:.4s}.wb:nth-child(6){animation-delay:.15s}.wb:nth-child(7){animation-delay:.25s}
+.btn-rec{font-family:'Fredoka One',cursive;font-size:.95rem;padding:.55rem 1rem;background:#cc3333;border:2.5px solid #3d2b1f;border-radius:30px;color:#fff;cursor:pointer;box-shadow:0 3px 0 #3d2b1f;width:100%;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:.4rem;transition:all .1s}
+.btn-rec:hover{transform:translateY(-1px)}
+.btn-rec:active{transform:translateY(2px);box-shadow:0 1px 0 #3d2b1f}
+.btn-rec.recg{background:#881100;animation:rp 1s ease-in-out infinite}
+@keyframes rp{from{box-shadow:0 3px 0 #3d2b1f}to{box-shadow:0 3px 15px rgba(200,50,0,.6),0 3px 0 #3d2b1f}}
+.btn-rec:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.status-m{font-size:.72rem;color:rgba(255,248,238,.6);text-align:center;font-weight:800;font-style:italic;min-height:1.1em;margin-top:.3rem}
+
+/* EXHIBIT */
+.exhibit-item{background:#fff8ee;border:2px solid #3d2b1f;border-radius:10px;padding:.4rem .5rem;width:100%;font-size:.7rem;font-weight:800;color:#3d2b1f;line-height:1.3;box-shadow:2px 2px 0 #3d2b1f}
+.exh-lbl{font-family:'Fredoka One',cursive;font-size:.6rem;color:#8b5e3c;letter-spacing:.08em}
+
+/* SCORES */
+.score-item{background:#fff8ee;border:2px solid #3d2b1f;border-radius:10px;padding:.35rem .5rem;width:100%;font-size:.72rem;font-weight:800;color:#3d2b1f;box-shadow:2px 2px 0 #3d2b1f;text-align:center}
+.score-lbl{font-family:'Fredoka One',cursive;font-size:.55rem;color:#8b5e3c;letter-spacing:.06em}
+.score-val{font-family:'Fredoka One',cursive;font-size:1.2rem;color:#3d2b1f}
+
+/* JURY */
+.jury-sec{background:#5c3d22;border-top:3px solid #3d2b1f;padding:.7rem;display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.jury-lbl{font-family:'Fredoka One',cursive;font-size:.7rem;color:#f5c842;letter-spacing:.1em}
+.jury-row{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center}
+.juror{display:flex;flex-direction:column;align-items:center;gap:1px}
+.juror.happy{animation:jbob .5s ease-in-out infinite alternate}
+.juror.angry{animation:jshk .25s ease-in-out infinite alternate}
+@keyframes jbob{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+@keyframes jshk{from{transform:translateX(-3px) rotate(-5deg)}to{transform:translateX(3px) rotate(5deg)}}
+.jname{font-size:9px;color:rgba(245,200,66,.65);font-weight:800;text-align:center}
+
+/* VERDICT */
+.verdict-card{background:#fff8ee;border:4px solid #3d2b1f;border-radius:22px;padding:2rem;max-width:560px;width:100%;box-shadow:6px 6px 0 #3d2b1f;position:relative;overflow:hidden}
+.verd-stamp{font-family:'Fredoka One',cursive;font-size:4rem;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-15deg);opacity:.08;pointer-events:none;color:#3d2b1f}
+.verd-title{font-family:'Fredoka One',cursive;font-size:2.8rem;text-align:center;margin-bottom:.8rem}
+.vt-guilty{color:#cc2222}.vt-inno{color:#228B22}
+.verd-crime{background:rgba(139,94,60,.1);border-left:4px solid #8b5e3c;padding:.6rem .9rem;margin:.6rem 0;font-size:.85rem;font-weight:800;color:#3d2b1f;border-radius:0 8px 8px 0}
+.vscore-row{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin:1rem 0}
+.vsc{background:rgba(139,94,60,.08);border-radius:10px;padding:.5rem;text-align:center;border:2px solid #3d2b1f}
+.vsc-l{font-family:'Fredoka One',cursive;font-size:.6rem;color:#8b5e3c;letter-spacing:.06em}
+.vsc-v{font-family:'Fredoka One',cursive;font-size:1.6rem;color:#3d2b1f}
+.sentence-box{background:#e07b3a;border:3px solid #3d2b1f;border-radius:12px;padding:.75rem 1rem;margin-top:1rem;color:#fff;font-weight:800;font-size:.85rem;text-align:center;box-shadow:3px 3px 0 #3d2b1f}
+.s-lbl{font-family:'Fredoka One',cursive;font-size:.65rem;letter-spacing:.1em;opacity:.85}
+.vbtn-row{display:flex;gap:.8rem;margin-top:1.2rem;flex-wrap:wrap}
+.vbtn-row .btn-main{flex:1;font-size:1rem;padding:.65rem 1rem}
+.gavel-over{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:100;pointer-events:none;opacity:0;transition:opacity .3s}
+.gavel-over.show{opacity:1}
+.gavel-txt{font-family:'Fredoka One',cursive;font-size:3.5rem;color:#3d2b1f;text-shadow:4px 4px 0 #f5c842;animation:gbang .35s ease}
+@keyframes gbang{0%{transform:scale(.5) rotate(-20deg)}60%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+.modal-ov{position:fixed;inset:0;background:rgba(61,43,31,.65);display:none;align-items:center;justify-content:center;z-index:200}
+.modal-ov.show{display:flex}
+.modal-box{background:#fff8ee;border:4px solid #3d2b1f;border-radius:20px;padding:1.8rem;max-width:360px;text-align:center;box-shadow:6px 6px 0 #3d2b1f}
+.modal-box h2{font-family:'Fredoka One',cursive;font-size:1.4rem;color:#3d2b1f;margin-bottom:.5rem}
+.modal-box p{font-size:.85rem;color:#5c3d22;font-weight:800;margin-bottom:1rem;line-height:1.5}
+.gerald-stage-txt{font-family:'Fredoka One',cursive;font-size:.6rem;color:#f5c842;text-align:center;margin-top:2px}
+.honk-flash-ov{position:fixed;inset:0;background:rgba(224,123,58,.28);pointer-events:none;z-index:50;opacity:0;transition:opacity .15s}
+.confetti-ov{position:fixed;inset:0;pointer-events:none;z-index:300;overflow:hidden}
+.cf{position:absolute;width:9px;height:9px;top:-10px;border-radius:2px;animation:cfall linear forwards}
+@keyframes cfall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+
+<div id="honkFlashOv" class="honk-flash-ov"></div>
+<div class="confetti-ov" id="confOv"></div>
+<div class="gavel-over" id="gavelOv"><div class="gavel-txt" id="gavelTxt">ORDER!</div></div>
+<div class="modal-ov" id="permMod">
+  <div class="modal-box">
+    <div style="font-size:3rem;margin-bottom:.5rem">🪿</div>
+    <h2>Harnold needs your camera</h2>
+    <p>The court requires visual evidence of your crimes. Allow camera access so the geese may judge you properly.</p>
+    <button class="btn-main" style="font-size:1rem;padding:.65rem 1.5rem" onclick="initCam();document.getElementById('permMod').classList.remove('show')">Allow camera</button>
+    <br><button class="btn-soft" onclick="document.getElementById('permMod').classList.remove('show');beginRound()">Play without camera</button>
+  </div>
+</div>
+
+<!-- TITLE -->
+<div id="s-title" class="screen active">
+  <div class="title-goose">
+    <svg viewBox="0 0 140 140" width="140" height="140">
+      <!-- Cozy background circle -->
+      <circle cx="70" cy="70" r="65" fill="#c8e8b8" stroke="#3d2b1f" stroke-width="3"/>
+      <!-- Body blob -->
+      <ellipse cx="70" cy="98" rx="40" ry="32" fill="#f0f0e0" stroke="#3d2b1f" stroke-width="2.5"/>
+      <!-- Wig -->
+      <ellipse cx="70" cy="42" rx="28" ry="14" fill="#ffffff" stroke="#3d2b1f" stroke-width="2.5"/>
+      <ellipse cx="52" cy="56" rx="10" ry="15" fill="#ffffff" stroke="#3d2b1f" stroke-width="2.5"/>
+      <ellipse cx="88" cy="56" rx="10" ry="15" fill="#ffffff" stroke="#3d2b1f" stroke-width="2.5"/>
+      <!-- Head -->
+      <circle cx="70" cy="58" r="22" fill="#f0f0e0" stroke="#3d2b1f" stroke-width="2.5"/>
+      <!-- Robe -->
+      <ellipse cx="70" cy="100" rx="40" ry="30" fill="#1a2040" stroke="#3d2b1f" stroke-width="2.5"/>
+      <rect x="58" y="75" width="24" height="38" fill="#f0f0e0"/>
+      <!-- Gavel -->
+      <rect x="86" y="88" width="22" height="7" rx="3.5" fill="#8b5e3c" stroke="#3d2b1f" stroke-width="1.5"/>
+      <rect x="93" y="83" width="7" height="15" rx="2" fill="#a07040" stroke="#3d2b1f" stroke-width="1.5"/>
+      <!-- Beak -->
+      <ellipse cx="70" cy="65" rx="9" ry="5" fill="#f5c842" stroke="#3d2b1f" stroke-width="2"/>
+      <line x1="61" y1="65" x2="79" y2="65" stroke="#8b5e3c" stroke-width="1.5"/>
+      <!-- Eyes -->
+      <circle cx="62" cy="54" r="5" fill="#3d2b1f"/>
+      <circle cx="78" cy="54" r="5" fill="#3d2b1f"/>
+      <circle cx="63.5" cy="52.5" r="1.8" fill="white"/>
+      <circle cx="79.5" cy="52.5" r="1.8" fill="white"/>
+      <!-- Stern brows -->
+      <path d="M57 48 Q62 46 67 48" fill="none" stroke="#3d2b1f" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M73 48 Q78 46 83 48" fill="none" stroke="#3d2b1f" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Stars -->
+      <text x="20" y="30" font-size="14" fill="#f5c842">★</text>
+      <text x="108" y="35" font-size="10" fill="#f5c842">★</text>
+      <text x="15" y="90" font-size="8" fill="#f5c842">★</text>
+      <text x="115" y="95" font-size="12" fill="#f5c842">★</text>
+    </svg>
+  </div>
+  <h1 class="game-title">What the Honk</h1>
+  <p class="subtitle">⚖️ You are on trial. The geese decide your fate. ⚖️</p>
+  <button class="btn-main" onclick="startGame()">Enter the Courtroom</button>
+  <div class="feat-row">
+    <div class="feat-card"><span class="fi">📸</span>Your face is evidence</div>
+    <div class="feat-card"><span class="fi">🪿</span>Gerald has opinions</div>
+    <div class="feat-card"><span class="fi">⚖️</span>Geese decide</div>
+    <div class="feat-card"><span class="fi">🔨</span>Sentences are real</div>
+  </div>
+  <button class="btn-soft" onclick="startGame()">▶ Play without camera</button>
+</div>
+
+<!-- COURT -->
+<div id="s-court" class="screen">
+  <div class="court-topbar">
+    <div class="court-sign">🔨 GOOSE COURT IN SESSION</div>
+    <div class="round-pill" id="roundBadge">ROUND 1 / 3</div>
+  </div>
+  <div class="phase-bar">
+    <div class="pdot on" id="pd1"></div>
+    <span class="phase-txt" id="phaseLabel">EVIDENCE GATHERING</span>
+    <div class="pdot" id="pd2"></div>
+    <div class="pdot" id="pd3"></div>
+    <div class="pdot" id="pd4"></div>
+  </div>
+  <!-- JUDGE BENCH -->
+  <div class="judge-bench-wrap">
+    <svg viewBox="0 0 90 100" width="90" height="100" style="flex-shrink:0">
+      <!-- Body/robe -->
+      <ellipse cx="45" cy="85" rx="36" ry="22" fill="#1a2040" stroke="#3d2b1f" stroke-width="2.5"/>
+      <rect x="33" y="66" width="24" height="32" fill="#f0f0e0"/>
+      <!-- Wings -->
+      <ellipse cx="14" cy="78" rx="14" ry="9" fill="#d8d8c8" stroke="#3d2b1f" stroke-width="2" transform="rotate(-20 14 78)"/>
+      <ellipse cx="76" cy="78" rx="14" ry="9" fill="#d8d8c8" stroke="#3d2b1f" stroke-width="2" transform="rotate(20 76 78)"/>
+      <!-- Gavel arm -->
+      <rect x="66" y="62" width="20" height="7" rx="3.5" fill="#8b5e3c" stroke="#3d2b1f" stroke-width="2"/>
+      <rect x="72" y="57" width="7" height="15" rx="2" fill="#a07040" stroke="#3d2b1f" stroke-width="2"/>
+      <!-- Wig -->
+      <ellipse cx="45" cy="28" rx="26" ry="12" fill="#ffffff" stroke="#3d2b1f" stroke-width="2.5"/>
+      <rect x="20" y="24" width="50" height="16" fill="#ffffff"/>
+      <ellipse cx="28" cy="40" rx="10" ry="14" fill="#ffffff" stroke="#3d2b1f" stroke-width="2.5"/>
+      <ellipse cx="62" cy="40" rx="10" ry="14" fill="#ffffff" stroke="#3d2b1f" stroke-width="2.5"/>
+      <!-- Head -->
+      <circle cx="45" cy="50" r="20" fill="#f0f0e0" stroke="#3d2b1f" stroke-width="2.5"/>
+      <!-- Beak -->
+      <ellipse cx="45" cy="56" rx="9" ry="5" fill="#f5c842" stroke="#3d2b1f" stroke-width="2"/>
+      <line x1="36" y1="56" x2="54" y2="56" stroke="#8b5e3c" stroke-width="1.5"/>
+      <!-- Eyes -->
+      <circle cx="38" cy="46" r="4.5" fill="#3d2b1f"/>
+      <circle cx="52" cy="46" r="4.5" fill="#3d2b1f"/>
+      <circle cx="39.5" cy="44.5" r="1.5" fill="white"/>
+      <circle cx="53.5" cy="44.5" r="1.5" fill="white"/>
+      <!-- Stern brows -->
+      <path d="M33 40 Q38 38 43 40" fill="none" stroke="#3d2b1f" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M47 40 Q52 38 57 40" fill="none" stroke="#3d2b1f" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <div style="flex:1;min-width:0">
+      <div class="judge-name-tag">⚖️ JUDGE HARNOLD</div>
+      <div class="judge-speech" id="judgeText"><em style="color:#b09070">The court will come to order...</em></div>
+    </div>
+  </div>
+
+  <!-- MAIN BODY -->
+  <div class="court-body" style="flex:1">
+    <!-- LEFT PANEL -->
+    <div class="panel-l">
+      <div class="panel-lbl">HONK-O-METER</div>
+      <div class="meter-wrap">
+        <div class="meter-track">
+          <div class="meter-lbl-t">GUILTY</div>
+          <div class="meter-lbl-b">INNO</div>
+          <div class="mfill-honk meter-fill" id="honkFill" style="height:20%"></div>
+        </div>
+      </div>
+      <div class="panel-lbl">GERALD'S RAGE</div>
+      <div class="meter-wrap">
+        <div class="meter-track">
+          <div class="meter-lbl-t" style="color:#ff88ff">UNGLUED</div>
+          <div class="meter-lbl-b" style="color:#88ffff">CALM</div>
+          <div class="mfill-gerald meter-fill" id="unhingedFill" style="height:5%"></div>
+        </div>
+      </div>
+      <!-- Gerald -->
+      <div style="margin-top:auto;display:flex;flex-direction:column;align-items:center">
+        <div class="panel-lbl" style="margin-bottom:.3rem">PROSECUTOR</div>
+        <svg viewBox="0 0 80 95" width="76" height="90" id="geraldSvg">
+          <!-- Suit body -->
+          <ellipse cx="40" cy="75" rx="26" ry="20" fill="#1a2a5a" stroke="#3d2b1f" stroke-width="2.5"/>
+          <rect x="32" y="60" width="16" height="26" fill="#f0f0e0"/>
+          <!-- Tie -->
+          <polygon points="40,63 43.5,70 40,77 36.5,70" fill="#cc2222" stroke="#3d2b1f" stroke-width="1.5"/>
+          <!-- Wings -->
+          <ellipse cx="16" cy="78" rx="12" ry="7" fill="#d0d0c0" stroke="#3d2b1f" stroke-width="2" transform="rotate(-15 16 78)"/>
+          <!-- Paper wing -->
+          <ellipse cx="64" cy="76" rx="12" ry="7" fill="#d0d0c0" stroke="#3d2b1f" stroke-width="2" transform="rotate(15 64 76)"/>
+          <rect x="56" y="68" width="16" height="20" rx="3" fill="#fff8ee" stroke="#3d2b1f" stroke-width="1.5" transform="rotate(10 56 68)"/>
+          <line x1="58" y1="73" x2="70" y2="71" stroke="#8b5e3c" stroke-width="1" transform="rotate(10 56 68)"/>
+          <line x1="58" y1="77" x2="70" y2="75" stroke="#8b5e3c" stroke-width="1" transform="rotate(10 56 68)"/>
+          <!-- Neck -->
+          <ellipse cx="40" cy="52" rx="11" ry="12" fill="#e8e8d8" stroke="#3d2b1f" stroke-width="2.5"/>
+          <!-- Head -->
+          <circle cx="40" cy="34" r="18" fill="#e8e8d8" stroke="#3d2b1f" stroke-width="2.5"/>
+          <!-- Beak -->
+          <ellipse cx="40" cy="40" rx="8" ry="4.5" fill="#f5c842" stroke="#3d2b1f" stroke-width="2"/>
+          <line x1="32" y1="40" x2="48" y2="40" stroke="#8b5e3c" stroke-width="1.5"/>
+          <!-- Eyes beady -->
+          <circle cx="33" cy="30" r="4" fill="#3d2b1f"/>
+          <circle cx="47" cy="30" r="4" fill="#3d2b1f"/>
+          <circle cx="34.3" cy="28.7" r="1.4" fill="white"/>
+          <circle cx="48.3" cy="28.7" r="1.4" fill="white"/>
+          <!-- Skeptical brows -->
+          <path d="M28 24 Q33 22 38 24" fill="none" stroke="#3d2b1f" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M42 24 Q47 21 52 24" fill="none" stroke="#3d2b1f" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Sweat drops -->
+          <circle cx="56" cy="22" r="3.5" fill="#88ccff" opacity="0" id="sw1"/>
+          <circle cx="61" cy="15" r="2.2" fill="#88ccff" opacity="0" id="sw2"/>
+        </svg>
+        <div class="panel-lbl" style="font-size:.55rem;color:rgba(245,200,66,.7)">GERALD, ESQ.</div>
+        <div class="gerald-stage-txt" id="geraldStageLabel">🪿 Professional</div>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="center">
+      <div class="charge-box" id="chargeBox">
+        <div class="charge-hdr">⚖️ THE CHARGES</div>
+        <div class="loading-row" id="chargeLoading"><span>Gathering evidence</span><span><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></span></div>
+        <div class="charge-txt" id="chargeText" style="display:none"></div>
+      </div>
+      <div class="gerald-bub" id="geraldBub">
+        <div class="gerald-nm"><span class="obj-stamp">OBJECTION!</span> GERALD</div>
+        <div class="gerald-line" id="geraldBubText">...</div>
+      </div>
+      <div class="cam-box" id="camBox">
+        <div class="cam-ph" id="camPh">
+          <span style="font-size:2rem">📸</span>
+          <span>Camera = evidence of crimes</span>
+          <button class="btn-tiny" onclick="initCam()">Grant Access</button>
+        </div>
+        <video id="vvid" autoplay playsinline muted></video>
+        <div class="cam-lbl">THE DEFENDANT (THAT'S YOU)</div>
+      </div>
+      <div class="def-box">
+        <div class="def-hdr">
+          <span style="font-size:.7rem">🎤 YOUR DEFENSE</span>
+          <div class="timer-circle" id="timerCircle">30</div>
+        </div>
+        <div class="transcript" id="transcript"><em style="color:rgba(255,248,238,.4)">Your words will appear here...</em></div>
+        <div class="wavez" id="wavez">
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div>
+        </div>
+        <button class="btn-rec" id="btnRec" onclick="toggleRec()" disabled>
+          <span id="recIcon">🎤</span><span id="recLbl">SPEAK YOUR DEFENSE</span>
+        </button>
+        <div class="status-m" id="statusMsg">Waiting for charges to be read...</div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel-r">
+      <div class="panel-lbl">EXHIBITS</div>
+      <div id="exhibitsList" style="width:100%;display:flex;flex-direction:column;gap:.4rem"></div>
+      <div style="margin-top:auto;width:100%">
+        <div class="panel-lbl">SCORES</div>
+        <div id="scoresList" style="width:100%;display:flex;flex-direction:column;gap:.3rem;margin-top:.3rem"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JURY -->
+  <div class="jury-sec">
+    <div class="jury-lbl">🪿 THE JURY OF YOUR PEERS 🪿</div>
+    <div class="jury-row" id="juryRow"></div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="s-verdict" class="screen">
+  <div class="verdict-card" id="verdictCard">
+    <div class="verd-stamp" id="vStamp">GUILTY</div>
+    <div class="verd-title" id="vTitle">GUILTY!</div>
+    <div style="text-align:center;font-size:3.5rem;margin-bottom:.5rem" id="vEmoji">🪿</div>
+    <div class="verd-crime" id="vCrime"></div>
+    <div class="verd-crime" id="vJudge" style="border-left-color:#cc2222;background:rgba(204,34,34,.05)"></div>
+    <div class="vscore-row" id="vScores"></div>
+    <div class="sentence-box" id="vSentBox">
+      <div class="s-lbl">⚖️ YOUR SENTENCE</div>
+      <div id="vSentTxt" style="margin-top:.3rem"></div>
+    </div>
+    <div class="vbtn-row">
+      <button class="btn-main" onclick="nextRound()">Next Round 🪿</button>
+      <button class="btn-soft" onclick="restartGame()">Start over</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const G={round:1,maxRounds:3,phase:'idle',charge:'',transcript:'',geraldUnhinged:5,honkLevel:20,scores:[],hasCam:false,isRec:false,timerInt:null,timeLeft:30,recognition:null,stream:null,imgData:null};
+const EXHIBITS='ABCDEF';
+let exCount=0;
+const SENTENCES_G=['You must touch grass for 20 consecutive minutes today','Mandatory consumption of one vegetable before sundown','30 days of cardigan-awareness training','You must make your bed for 7 days straight','Drink one glass of water every hour for 8 hours','Must text a family member just to check in. Today.','15 minutes of sunlight — minimum','You must organize one drawer. Any drawer. Do it.','Mandatory nap with curtains OPEN for natural light','You must eat a real breakfast. Not just coffee.'];
+const SENTENCES_I=['Case dismissed! The geese are impressed.','Innocent! The jury awards you one smug feeling.','Not guilty! Harnold is displeased. Gerald is in shambles.','Acquitted! Gerald\'s tie is now fully crooked.','Innocent! The geese have honked in your favor.'];
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+
+function buildJury(){
+  const jr=document.getElementById('juryRow');jr.innerHTML='';
+  const names=['Grumble','Honky','Agnes','Kevin','Feathers','Doris','Gerald Jr','Wendy'];
+  const cols=['#f0f0e0','#e8f0e0','#f0e8e0','#e8e8f8','#f0eee0','#eef0e0','#f0e0f0','#e0f0f0'];
+  for(let i=0;i<8;i++){
+    const d=document.createElement('div');d.className='juror';d.id='jur'+i;
+    const c=cols[i%cols.length];
+    d.innerHTML=`<svg viewBox="0 0 38 55" width="38" height="55">
+      <ellipse cx="19" cy="42" rx="15" ry="11" fill="${c}" stroke="#3d2b1f" stroke-width="2"/>
+      <ellipse cx="19" cy="32" rx="13" ry="11" fill="${c}" stroke="#3d2b1f" stroke-width="2"/>
+      <circle cx="19" cy="18" r="12" fill="${c}" stroke="#3d2b1f" stroke-width="2"/>
+      <ellipse cx="19" cy="23" rx="5.5" ry="3.2" fill="#f5c842" stroke="#3d2b1f" stroke-width="1.5"/>
+      <circle cx="14.5" cy="14" r="2.8" fill="#3d2b1f"/>
+      <circle cx="23.5" cy="14" r="2.8" fill="#3d2b1f"/>
+      <circle cx="15.3" cy="12.8" r="1" fill="white"/>
+      <circle cx="24.3" cy="12.8" r="1" fill="white"/>
+    </svg><div class="jname">${names[i]}</div>`;
+    jr.appendChild(d);
+  }
+}
+
+function animJury(score){
+  for(let i=0;i<8;i++){
+    const j=document.getElementById('jur'+i);if(!j)continue;
+    j.className='juror';
+    setTimeout(()=>{j.className='juror '+(score>=6?'angry':'happy')},i*100);
+  }
+}
+
+async function initCam(){
+  try{
+    G.stream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480},audio:false});
+    const v=document.getElementById('vvid');v.srcObject=G.stream;v.style.display='block';
+    document.getElementById('camPh').style.display='none';G.hasCam=true;return true;
+  }catch(e){G.hasCam=false;return false;}
+}
+
+function captureFrame(){
+  const v=document.getElementById('vvid');
+  if(!v||!G.hasCam||v.readyState<2)return null;
+  const c=document.createElement('canvas');c.width=320;c.height=240;
+  const ctx=c.getContext('2d');ctx.scale(-1,1);ctx.drawImage(v,-320,0,320,240);
+  return c.toDataURL('image/jpeg',.55);
+}
+
+function setJudgeText(t){document.getElementById('judgeText').innerHTML=t}
+function setStatus(t){document.getElementById('statusMsg').textContent=t}
+function setPhase(n,lbl){
+  ['pd1','pd2','pd3','pd4'].forEach((id,i)=>{
+    const d=document.getElementById(id);
+    if(i+1<n)d.className='pdot done';
+    else if(i+1===n)d.className='pdot on';
+    else d.className='pdot';
+  });
+  document.getElementById('phaseLabel').textContent=lbl;
+}
+
+function updateHonk(pct){
+  G.honkLevel=Math.max(5,Math.min(95,pct));
+  document.getElementById('honkFill').style.height=G.honkLevel+'%';
+}
+function updateUnhinged(pct){
+  G.geraldUnhinged=Math.max(5,Math.min(98,pct));
+  document.getElementById('unhingedFill').style.height=G.geraldUnhinged+'%';
+  const stage=pct<25?'🪿 Professional':pct<50?'🪿 Invested':pct<75?'🪿🪿 Spiraling':'🪿🪿🪿 UNGLUED';
+  document.getElementById('geraldStageLabel').textContent=stage;
+  if(pct>60){document.getElementById('sw1').style.opacity='0.85';document.getElementById('sw2').style.opacity='0.85';}
+  else{document.getElementById('sw1').style.opacity='0';document.getElementById('sw2').style.opacity='0';}
+}
+
+function gavelBang(txt){
+  const o=document.getElementById('gavelOv');const t=document.getElementById('gavelTxt');
+  t.textContent=txt;o.classList.add('show');
+  const hf=document.getElementById('honkFlashOv');hf.style.opacity='1';
+  setTimeout(()=>{o.classList.remove('show');hf.style.opacity='0'},1400);
+}
+
+function addExhibit(lbl,txt){
+  const d=document.createElement('div');d.className='exhibit-item';
+  d.innerHTML=`<div class="exh-lbl">EXHIBIT ${lbl}</div>${txt.substring(0,60)}${txt.length>60?'...':''}`;
+  document.getElementById('exhibitsList').appendChild(d);
+}
+
+async function startGame(){
+  G.round=1;G.scores=[];G.geraldUnhinged=5;exCount=0;
+  showScreen('s-court');buildJury();
+  document.getElementById('roundBadge').textContent='ROUND 1 / 3';
+  document.getElementById('permMod').classList.add('show');
+  setTimeout(()=>{document.getElementById('permMod').classList.remove('show');beginRound()},3500);
+}
+
+async function beginRound(){
+  G.phase='gather';G.transcript='';G.honkLevel=20;exCount=0;
+  document.getElementById('exhibitsList').innerHTML='';
+  document.getElementById('scoresList').innerHTML='';
+  document.getElementById('geraldBub').classList.remove('vis');
+  document.getElementById('transcript').innerHTML='<em style="color:rgba(255,248,238,.4)">Your words will appear here...</em>';
+  document.getElementById('btnRec').disabled=true;
+  document.getElementById('recLbl').textContent='SPEAK YOUR DEFENSE';
+  document.getElementById('recIcon').textContent='🎤';
+  document.getElementById('timerCircle').textContent='30';
+  document.getElementById('roundBadge').textContent=`ROUND ${G.round} / 3`;
+  document.getElementById('chargeLoading').style.display='flex';
+  document.getElementById('chargeText').style.display='none';
+  updateHonk(20);updateUnhinged(Math.min(G.geraldUnhinged+8,95));
+  setPhase(1,'EVIDENCE GATHERING');
+  setJudgeText('<em style="color:#b09070">*adjusts wig* The court will examine the evidence...</em>');
+  setStatus('Gathering evidence from the scene of the crime...');
+  if(!G.hasCam)await initCam();
+  await delay(2000);
+  G.imgData=captureFrame();
+  await generateCharges();
+}
+
+async function generateCharges(){
+  setPhase(2,'READING THE CHARGES');
+  setJudgeText('The court has reviewed the evidence. Reading the charges now...');
+  setStatus('Harnold is reviewing your crimes...');
+  const sys=`You are Judge Harnold, a petty dramatic goose judge in an absurd comedy courtroom game. Analyze the defendant (use image if provided, else invent based on a generic person at a computer) and generate one absurd, specific, funny criminal charge. Return ONLY valid JSON:
+{"charge":"The full charge 1-2 funny sentences","crime_name":"Short crime label","exhibits":["Exhibit A 5-8 words","Exhibit B 5-8 words"],"opening":"Harnold's dramatic 1-sentence courtroom announcement"}
+Make charges specific and observational. Reference outfit, expression, background, lighting, objects, posture. Round ${G.round} of 3 — escalate absurdity each round.`;
+  const uc=[];
+  if(G.imgData)uc.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:G.imgData.split(',')[1]}});
+  uc.push({type:'text',text:`Generate charges for round ${G.round}. Return only JSON, no markdown.`});
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:sys,messages:[{role:'user',content:uc}]})});
+    const data=await r.json();
+    const txt=data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
+    const p=JSON.parse(txt);
+    G.charge=p.charge;
+    p.exhibits.forEach((ex,i)=>addExhibit(EXHIBITS[exCount++],ex));
+    addExhibit(EXHIBITS[exCount++],G.imgData?'Webcam footage (extremely damning)':'General vibe (suspicious)');
+    await delay(900);gavelBang('⚖️ ORDER!');await delay(800);
+    setJudgeText(p.opening||'The defendant stands accused of crimes most heinous!');
+    document.getElementById('chargeLoading').style.display='none';
+    document.getElementById('chargeText').style.display='block';
+    document.getElementById('chargeText').textContent=p.charge;
+    await delay(1800);await geraldOpening();
+  }catch(e){
+    const fbs=[{charge:'Willful projection of "main character" energy without credentials to back it up.',crime_name:'Unwarranted Protagonist Syndrome',exhibits:['Suspicious posture observed','The general vibe (damning)'],opening:'The defendant stands accused of crimes against decent behavior!'},{charge:'Operating a personal space in a state of "organized chaos" — emphasis on chaos, Your Honor.',crime_name:'Chaotic Neutral Interior Design',exhibits:['Background evidence gathered','Ambient energy levels measured'],opening:'Order in the court! These charges are most severe!'},{charge:'Conspiracy to appear completely fine while clearly Being A Lot™ on the inside.',crime_name:'Covert Internal Spiraling',exhibits:['Facial expression — suspicious','Eyes: too composed — red flag'],opening:'The prosecution has damning evidence today!'}];
+    const fb=fbs[(G.round-1)%fbs.length];G.charge=fb.charge;
+    fb.exhibits.forEach((ex,i)=>addExhibit(EXHIBITS[exCount++],ex));
+    setJudgeText(fb.opening);
+    document.getElementById('chargeLoading').style.display='none';
+    document.getElementById('chargeText').style.display='block';
+    document.getElementById('chargeText').textContent=fb.charge;
+    await delay(1500);await geraldOpening();
+  }
+}
+
+async function geraldOpening(){
+  setPhase(3,'GERALD PRESENTS EVIDENCE');
+  const stage=G.geraldUnhinged<25?'composed, cites fake precedents like "Goose v. Goose 1987"':G.geraldUnhinged<50?'invested, editorializing and sighing audibly':G.geraldUnhinged<75?'spiraling, contradicting himself mid-sentence':'fully unglued, arguing with the judge, bringing up his ex-wife';
+  const sys=`You are Gerald, a goose prosecutor with NO law degree and ENORMOUS confidence. React to the charge with a short, chaotic opening statement (2-3 sentences max). Be specific to the charge. Stage: ${stage}. Chaos level: ${Math.round(G.geraldUnhinged)}. Start with a bold claim about why this is the most serious case you've ever seen. Occasionally contradict yourself. Be funny. Return just the text, no JSON.`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:150,system:sys,messages:[{role:'user',content:`The charge is: "${G.charge}". Give Gerald's unhinged opening. ${Math.round(G.geraldUnhinged)} chaos level.`}]})});
+    const data=await r.json();
+    const gt=data.content.map(c=>c.text||'').join('').trim();
+    document.getElementById('geraldBubText').textContent=gt;
+    document.getElementById('geraldBub').classList.add('vis');
+  }catch(e){
+    const fallbacks=["Your Honor, in 47 years of practicing law — well, six months, well, I watched a lot of courtroom TV — I have NEVER seen such blatant guilt.","CLEARLY the defendant has something to hide! I don't know what yet, but I feel it in my feathers and that should count as evidence.",'I have prepared seventeen exhibits. Exhibit A is a vibe. Exhibits B through Q are also vibes. They are all damning, Your Honor.'];
+    document.getElementById('geraldBubText').textContent=fallbacks[Math.floor(Math.random()*fallbacks.length)];
+    document.getElementById('geraldBub').classList.add('vis');
+  }
+  setJudgeText('The prosecution has presented its case. Defendant — you have 30 seconds to explain yourself.');
+  setStatus('Click the microphone to begin your defense!');
+  document.getElementById('btnRec').disabled=false;
+}
+
+function toggleRec(){
+  if(G.isRec){stopRec();return;}
+  startRec();
+}
+
+function startRec(){
+  G.isRec=true;G.transcript='';G.timeLeft=30;
+  const btn=document.getElementById('btnRec');
+  btn.classList.add('recg');
+  document.getElementById('recIcon').textContent='⏹';
+  document.getElementById('recLbl').textContent='STOP RECORDING';
+  document.getElementById('wavez').style.display='flex';
+  setStatus('The court is listening...');
+  setPhase(4,'DEFENDANT SPEAKS');
+
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(SpeechRecognition){
+    G.recognition=new SpeechRecognition();G.recognition.continuous=true;G.recognition.interimResults=true;G.recognition.lang='en-US';
+    G.recognition.onresult=e=>{
+      let interim='',final='';
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        if(e.results[i].isFinal)final+=e.results[i][0].transcript;
+        else interim+=e.results[i][0].transcript;
+      }
+      if(final)G.transcript+=final+' ';
+      document.getElementById('transcript').textContent=(G.transcript+interim)||'...';
+      const wc=(G.transcript+interim).split(' ').filter(w=>w).length;
+      updateHonk(Math.max(5,70-wc*3));
+    };
+    G.recognition.start();
+  }else{
+    document.getElementById('transcript').textContent='(Speech recognition not available — type your defense below)';
+    G.transcript='I plead not guilty on all counts and demand a fair trial by geese.';
+  }
+
+  G.timerInt=setInterval(()=>{
+    G.timeLeft--;
+    const t=document.getElementById('timerCircle');
+    t.textContent=G.timeLeft;
+    if(G.timeLeft<=10)t.style.background='#cc3333';
+    if(G.timeLeft<=0){clearInterval(G.timerInt);stopRec();}
+  },1000);
+}
+
+function stopRec(){
+  G.isRec=false;
+  clearInterval(G.timerInt);
+  if(G.recognition)try{G.recognition.stop()}catch(e){}
+  const btn=document.getElementById('btnRec');
+  btn.classList.remove('recg');btn.disabled=true;
+  document.getElementById('recIcon').textContent='🎤';
+  document.getElementById('recLbl').textContent='SPEAK YOUR DEFENSE';
+  document.getElementById('wavez').style.display='none';
+  if(!G.transcript||G.transcript.trim().length<3)G.transcript='I... uh... I can explain.';
+  setStatus('Evaluating your defense...');
+  setTimeout(()=>evaluateDefense(),800);
+}
+
+async function evaluateDefense(){
+  setJudgeText('*strokes chin pensively* The court will now deliberate...');
+  setStatus('Gerald is having feelings about your defense...');
+
+  await geraldRebuttal();
+  await delay(1200);
+
+  const sys=`You are Judge Harnold, stern goose judge. Score this defense against this charge. Return ONLY valid JSON:
+{"coherence":3,"desperation":7,"creativity":5,"goose_sympathy":4,"verdict_score":6,"ruling":"One funny sentence about why the defendant is guilty or innocent","guilty":true}
+Scores 1-10. verdict_score 1-4=innocent, 5-10=guilty. Be funny and specific to the actual defense given.`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,system:sys,messages:[{role:'user',content:`Charge: "${G.charge}"\nDefense: "${G.transcript}"\nReturn only JSON.`}]})});
+    const data=await r.json();
+    const txt=data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
+    const p=JSON.parse(txt);
+    showVerdict(p);
+  }catch(e){
+    const score=Math.floor(Math.random()*4)+4;
+    showVerdict({coherence:Math.floor(Math.random()*5)+3,desperation:Math.floor(Math.random()*5)+4,creativity:Math.floor(Math.random()*5)+3,goose_sympathy:Math.floor(Math.random()*4)+2,verdict_score:score,ruling:'The court found your argument technically coherent but deeply suspicious.',guilty:score>=5});
+  }
+}
+
+async function geraldRebuttal(){
+  const stage=G.geraldUnhinged<25?'composed':G.geraldUnhinged<50?'invested':G.geraldUnhinged<75?'spiraling, contradicting yourself':'fully unglued, panicking';
+  updateUnhinged(Math.min(G.geraldUnhinged+15,98));
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:120,system:`You are Gerald, chaotic goose prosecutor. React to this defense (1-2 sentences). Stage: ${stage}. Be specific, funny, and increasingly unhinged. Possibly contradict yourself.`,messages:[{role:'user',content:`Defense given: "${G.transcript}". Gerald's unhinged rebuttal:`}]})});
+    const data=await r.json();
+    const gt=data.content.map(c=>c.text||'').join('').trim();
+    document.getElementById('geraldBubText').textContent=gt;
+    document.getElementById('geraldBub').classList.remove('vis');
+    await delay(200);document.getElementById('geraldBub').classList.add('vis');
+  }catch(e){
+    const rb=['Your Honor, that\'s exactly what a guilty person would say. Or an innocent person. Mainly I\'m going on vibes.','OBJECTION! The defendant just made a compelling point and I need a moment to collect myself — I mean, to object!','I have NEW evidence. It\'s the way they said that. Just... the whole thing. I rest my case.'];
+    document.getElementById('geraldBubText').textContent=rb[Math.floor(Math.random()*rb.length)];
+    document.getElementById('geraldBub').classList.remove('vis');
+    await delay(200);document.getElementById('geraldBub').classList.add('vis');
+  }
+}
+
+function showVerdict(p){
+  const guilty=p.guilty||(p.verdict_score>=5);
+  G.scores.push(p);
+  updateHonk(guilty?85:15);
+  animJury(p.verdict_score);
+  gavelBang(guilty?'⚖️ GUILTY!':'🌿 INNOCENT!');
+
+  ['coherence','desperation','creativity','goose_sympathy'].forEach(k=>{
+    const d=document.createElement('div');d.className='score-item';
+    d.innerHTML=`<div class="score-lbl">${k.replace('_',' ').toUpperCase()}</div><div class="score-val">${p[k]}/10</div>`;
+    document.getElementById('scoresList').appendChild(d);
+  });
+
+  setTimeout(()=>{
+    document.getElementById('vStamp').textContent=guilty?'GUILTY':'INNOCENT';
+    document.getElementById('vTitle').textContent=guilty?'GUILTY!':'INNOCENT!';
+    document.getElementById('vTitle').className='verd-title '+(guilty?'vt-guilty':'vt-inno');
+    document.getElementById('vEmoji').textContent=guilty?'🪿':'🌿';
+    document.getElementById('vCrime').textContent='Crime: '+G.charge;
+    document.getElementById('vJudge').textContent='Ruling: '+(p.ruling||'The geese have spoken.');
+    const sc=document.getElementById('vScores');sc.innerHTML='';
+    [{l:'Coherence',v:p.coherence},{l:'Desperation',v:p.desperation},{l:'Creativity',v:p.creativity},{l:'Goose Sympathy',v:p.goose_sympathy}].forEach(s=>{
+      const d=document.createElement('div');d.className='vsc';
+      d.innerHTML=`<div class="vsc-l">${s.l.toUpperCase()}</div><div class="vsc-v">${s.v}/10</div>`;
+      sc.appendChild(d);
+    });
+    const arr=guilty?SENTENCES_G:SENTENCES_I;
+    document.getElementById('vSentTxt').textContent=arr[Math.floor(Math.random()*arr.length)];
+    const nb=document.getElementById('s-verdict').querySelector('.vbtn-row');
+    if(G.round>=G.maxRounds){nb.innerHTML='<button class="btn-main" onclick="restartGame()">Play Again 🪿</button>';}
+    else{nb.innerHTML='<button class="btn-main" onclick="nextRound()">Next Round 🪿</button><button class="btn-soft" onclick="restartGame()">Start over</button>';}
+    if(!guilty)spawnConfetti();
+    showScreen('s-verdict');
+  },1800);
+}
+
+function spawnConfetti(){
+  const w=document.getElementById('confOv');w.innerHTML='';
+  const cols=['#f5c842','#e07b3a','#cc2222','#9dc88c','#5c8acc','#d04ec8'];
+  for(let i=0;i<40;i++){
+    const p=document.createElement('div');p.className='cf';
+    p.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s;`;
+    w.appendChild(p);
+    setTimeout(()=>p.remove(),4000);
+  }
+}
+
+function nextRound(){
+  G.round++;
+  document.getElementById('scoresList').innerHTML='';
+  showScreen('s-court');
+  beginRound();
+}
+
+function restartGame(){startGame()}
+
+buildJury();
+</script>
